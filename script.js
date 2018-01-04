@@ -9,21 +9,22 @@ fetch(endpoint)
 const input = document.querySelector('input');
 
 const filterResults = () => {
-  // get current value
-  // get current value length
-  // filter out entries in cities array that don't start with current value
   let currentVal = input.value;
-  let currentValLength = input.value.length;
-  let targetCities = getTargetCities(currentVal, currentValLength);
+  let targetCities = getTargetCities(currentVal, cities);
   console.log(targetCities);
 }
 
-function getTargetCities(currentVal, length) {
-  let filteredArr = cities.filter(entry => {
-    let slicedEntry = entry.city.slice(0, length);
-    return currentVal.toLowerCase() === slicedEntry.toLowerCase();
-  })
+function getTargetCities(currentVal, cities) {
+  const regex = new RegExp(currentVal, 'gi')
+  let filteredArr =
+    cities.filter(entry => {
+      return isMatch(entry, regex);
+    })
   return filteredArr;
+}
+
+function isMatch(entry, regex) {
+  return entry.city.match(regex) || entry.state.match(regex);
 }
 
 input.addEventListener('input', filterResults);
