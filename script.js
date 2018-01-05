@@ -8,18 +8,13 @@ fetch(endpoint)
 const searchedInput = document.querySelector('.search');
 const suggestions = document.querySelector('.suggestions');
 
-// display matches
-// get array of matches
-// add hl to words that are being searched
-// add to suggestions class
-
 function displayMatches() {
   let matches = getMatches(this.value, cities)
   renderHTML(this.value, matches);
 }
 
 function getMatches(input, cities) {
-  const regex = new RegExp(input, 'gi')
+  const regex = getRegEx(input);
   let matches =
     cities.filter(entry => {
       return isMatch(entry, regex);
@@ -32,11 +27,11 @@ function isMatch(entry, regex) {
 }
 
 function renderHTML(input, matches) {
-  let regex = new RegExp(input, 'gi');
+  const regex = getRegEx(input);
   let outputHTML =
     matches.map(place => {
-      let city = place.city.replace(regex, `<span class="hl">${input}</span>`)
-      let state = place.state.replace(regex, `<span class="hl">${input}</span>`)
+      let city = getPlaceHTML(input, place.city);
+      let state = getPlaceHTML(input, place.state);
       let population = getPopulation(place.population)
       return `
         <li>
@@ -46,6 +41,17 @@ function renderHTML(input, matches) {
       `;
     }).join('');
   suggestions.innerHTML = outputHTML;
+}
+
+function getPlaceHTML(input, value) {
+  const regex = getRegEx(input);
+  let newValue = value.replace(regex, `<span class="hl">${input}</span>`);
+  return newValue;
+}
+
+function getRegEx(input) {
+  let regex = new RegExp(input, 'gi');
+  return regex;
 }
 
 function getPopulation(population) {
