@@ -6,15 +6,31 @@ fetch(endpoint)
   .then(response => response.json())
   .then(data => cities.push(...data));
 
-const input = document.querySelector('input');
+const searchedInput = document.querySelector('.search');
 
-const filterResults = () => {
-  let currentVal = input.value;
-  let targetCities = getTargetCities(currentVal, cities);
+const getResults = (cities, input) => {
+  let targetCities = filterResults(cities, input)
+  // displayCities(targetCities);
   console.log(targetCities);
 }
 
-function getTargetCities(currentVal, cities) {
+// display matches
+// get array of matches
+// add hl to words that are being searched
+// add to suggestions class
+
+function displayMatches() {
+  console.log(this.value)
+}
+
+
+const filterResults = (cities, input) => {
+  let currentVal = input.value;
+  let targetCities = getTargetCities(currentVal, cities);
+  return targetCities;
+}
+
+function getTargetCities(currentVal, cities) => {
   const regex = new RegExp(currentVal, 'gi')
   let filteredArr =
     cities.filter(entry => {
@@ -23,8 +39,8 @@ function getTargetCities(currentVal, cities) {
   return filteredArr;
 }
 
-function isMatch(entry, regex) {
+const isMatch = (entry, regex) => {
   return entry.city.match(regex) || entry.state.match(regex);
 }
 
-input.addEventListener('input', filterResults);
+searchedInput.addEventListener('input', displayMatches);
