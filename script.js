@@ -1,5 +1,4 @@
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
-
 const cities = [];
 
 fetch(endpoint)
@@ -7,6 +6,7 @@ fetch(endpoint)
   .then(data => cities.push(...data));
 
 const searchedInput = document.querySelector('.search');
+const suggestions = document.querySelector('.suggestions');
 
 // display matches
 // get array of matches
@@ -15,7 +15,7 @@ const searchedInput = document.querySelector('.search');
 
 function displayMatches() {
   let matches = getMatches(this.value, cities)
-  renderHTML(matches);
+  renderHTML(this.value, matches);
 }
 
 function getMatches(input, cities) {
@@ -31,29 +31,25 @@ function isMatch(entry, regex) {
   return entry.city.match(regex) || entry.state.match(regex);
 }
 
-function renderHTML(matches) {
-  // get city
-  // get state
-  // get population
-  // create list element
-  // create html
-  // append to suggestions
+function renderHTML(input, matches) {
+  let regex = new RegExp(input, 'gi');
+  let outputHTML =
+    matches.map(place => {
+      let city = place.city.replace(regex, `<span class="hl">${input}</span>`)
+      let state = place.state.replace(regex, `<span class="hl">${input}</span>`)
+      let population = getPopulation(place.population)
+      return `
+        <li>
+          <span class="name">${city}, ${state}</span>
+          <span class="population">${population}</span>
+        </li>
+      `;
+    }).join('');
+  suggestions.innerHTML = outputHTML;
+}
 
-  // highlight searched words;
-  let suggestions = document.querySelector('.suggestions');
-
-  while (suggestions.firstChild) {
-    suggestions.removeChild(suggestions.firstChild);
-  }
-
-  matches.forEach(place => {
-    let city = place.city;
-    let state = place.state;
-    let population = Number(place.population).toLocaleString();
-    let li = document.createElement('li');
-    li.innerHTML = `${city}, ${state}<span class="population">${population}</span>`;
-    suggestions.appendChild(li);
-  })
+function getPopulation(population) {
+  return Number(population).toLocaleString();
 }
 
 searchedInput.addEventListener('keyup', displayMatches);
