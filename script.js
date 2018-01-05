@@ -8,39 +8,54 @@ fetch(endpoint)
 
 const searchedInput = document.querySelector('.search');
 
-const getResults = (cities, input) => {
-  let targetCities = filterResults(cities, input)
-  // displayCities(targetCities);
-  console.log(targetCities);
-}
-
 // display matches
 // get array of matches
 // add hl to words that are being searched
 // add to suggestions class
 
 function displayMatches() {
-  console.log(this.value)
+  let matches = getMatches(this.value, cities)
+  renderHTML(matches);
 }
 
-
-const filterResults = (cities, input) => {
-  let currentVal = input.value;
-  let targetCities = getTargetCities(currentVal, cities);
-  return targetCities;
-}
-
-function getTargetCities(currentVal, cities) => {
-  const regex = new RegExp(currentVal, 'gi')
-  let filteredArr =
+function getMatches(input, cities) {
+  const regex = new RegExp(input, 'gi')
+  let matches =
     cities.filter(entry => {
       return isMatch(entry, regex);
     })
-  return filteredArr;
+  return matches;
 }
 
-const isMatch = (entry, regex) => {
+function isMatch(entry, regex) {
   return entry.city.match(regex) || entry.state.match(regex);
 }
 
-searchedInput.addEventListener('input', displayMatches);
+function renderHTML(matches) {
+  // get city
+  // get state
+  // get population
+  // create list element
+  // create html
+  // append to suggestions
+
+  // get rid of original values;
+  // highlight searched words;
+  // reset each time search is made;
+  const suggestions = document.querySelector('.suggestions');
+  let li = document.createElement('li');
+
+  while (suggestions.firstChild) {
+    suggestions.removeChild(suggestions.firstChild);
+  }
+
+  matches.forEach(place => {
+    let city = place.city;
+    let state = place.state;
+    let population = Number(place.population).toLocaleString();
+    li.innerHTML = `${city}, ${state} <span class="population">${population}</span>`;
+    suggestions.appendChild(li);
+  })
+}
+
+searchedInput.addEventListener('keyup', displayMatches);
