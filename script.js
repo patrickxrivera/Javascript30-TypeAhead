@@ -39,11 +39,8 @@ function renderHTML(matches) {
   // create html
   // append to suggestions
 
-  // get rid of original values;
   // highlight searched words;
-  // reset each time search is made;
-  const suggestions = document.querySelector('.suggestions');
-  let li = document.createElement('li');
+  let suggestions = document.querySelector('.suggestions');
 
   while (suggestions.firstChild) {
     suggestions.removeChild(suggestions.firstChild);
@@ -53,7 +50,8 @@ function renderHTML(matches) {
     let city = place.city;
     let state = place.state;
     let population = Number(place.population).toLocaleString();
-    li.innerHTML = `${city}, ${state} <span class="population">${population}</span>`;
+    let li = document.createElement('li');
+    li.innerHTML = `${city}, ${state}<span class="population">${population}</span>`;
     suggestions.appendChild(li);
   })
 }
